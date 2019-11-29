@@ -1,6 +1,9 @@
 import datetime
 import struct
 
+FORMAT = "<qqI"
+HEADER_SIZE = struct.calcsize(FORMAT)
+
 
 class Thought:
     """
@@ -29,7 +32,7 @@ class Thought:
 
         :return: Bytes representing the thought.
         """
-        return struct.pack("LLI", self.user_id, int(self.timestamp.timestamp()),
+        return struct.pack(FORMAT, self.user_id, int(self.timestamp.timestamp()),
                            len(self.thought)) + self.thought.encode()
 
     @classmethod
@@ -40,5 +43,5 @@ class Thought:
         :param data: Bytes to be deserialized.
         :return: The generated thought.
         """
-        user_id, timestamp, thought_length = struct.unpack("LLI", data[:20])
-        return cls(user_id, datetime.datetime.fromtimestamp(timestamp), data[20:].decode())
+        user_id, timestamp, thought_length = struct.unpack(FORMAT, data[:HEADER_SIZE])
+        return cls(user_id, datetime.datetime.fromtimestamp(timestamp), data[HEADER_SIZE:].decode())
