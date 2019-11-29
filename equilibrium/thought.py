@@ -1,6 +1,8 @@
 import datetime
 import struct
 
+import pytz
+
 FORMAT = "<qqI"
 HEADER_SIZE = struct.calcsize(FORMAT)
 
@@ -44,4 +46,4 @@ class Thought:
         :return: The generated thought.
         """
         user_id, timestamp, thought_length = struct.unpack(FORMAT, data[:HEADER_SIZE])
-        return cls(user_id, datetime.datetime.fromtimestamp(timestamp), data[HEADER_SIZE:].decode())
+        return cls(user_id, datetime.datetime.fromtimestamp(timestamp, tz=pytz.utc), data[HEADER_SIZE:].decode())
