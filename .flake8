@@ -1,0 +1,5 @@
+[flake8]
+ignore =
+    # Unused imports - happens in __init__ files and is just annoying
+    F401
+max-line-length = 120
