@@ -2,11 +2,18 @@ import pathlib
 import struct
 import threading
 from datetime import datetime
+from typing import Tuple
 
-from .utils import Listener
+from .utils import Connection, Listener
 
 
-def run_server(address, data_dir):
+def run_server(address: Tuple[str, int], data_dir: str):
+    """
+    Set up a server, which will listen for and handle incoming connections until interrupted.
+
+    :param address: The address to bind the server to.
+    :param data_dir: The path to the directory for the server to store data in.
+    """
     data_path = pathlib.Path(data_dir)
     if not data_path.exists():
         data_path.mkdir(parents=True)
@@ -18,9 +25,12 @@ def run_server(address, data_dir):
 
 
 class ClientHandler(threading.Thread):
+    """
+    A specialized thread to handle incoming connections to the server.
+    """
     lock = threading.Lock()
 
-    def __init__(self, connection, data_path):
+    def __init__(self, connection: Connection, data_path: pathlib.Path):
         super().__init__()
         self.connection = connection
         self.data_path = data_path

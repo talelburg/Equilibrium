@@ -3,7 +3,11 @@ import struct
 
 
 class Thought:
-    def __init__(self, user_id, timestamp, thought):
+    """
+    A class representing a user's thought.
+    """
+
+    def __init__(self, user_id: int, timestamp: datetime.datetime, thought: str):
         self.user_id = user_id
         self.timestamp = timestamp
         self.thought = thought
@@ -19,11 +23,22 @@ class Thought:
             return False
         return self.user_id == other.user_id and self.timestamp == other.timestamp and self.thought == other.thought
 
-    def serialize(self):
+    def serialize(self) -> bytes:
+        """
+        Serialize a thought to a compact representation, suitable for sending over networks.
+
+        :return: Bytes representing the thought.
+        """
         return struct.pack("LLI", self.user_id, int(self.timestamp.timestamp()),
                            len(self.thought)) + self.thought.encode()
 
     @classmethod
-    def deserialize(cls, data):
+    def deserialize(cls, data: bytes):
+        """
+        Deserialize bytes into a thought object.
+
+        :param data: Bytes to be deserialized.
+        :return: The generated thought.
+        """
         user_id, timestamp, thought_length = struct.unpack("LLI", data[:20])
         return cls(user_id, datetime.datetime.fromtimestamp(timestamp), data[20:].decode())

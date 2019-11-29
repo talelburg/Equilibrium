@@ -4,7 +4,11 @@ from . import Connection
 
 
 class Listener:
-    def __init__(self, port, host="0.0.0.0", backlog=1000, reuseaddr=True):
+    """
+    A helper class to manage a listening socket.
+    """
+
+    def __init__(self, port: int, host="0.0.0.0", backlog=1000, reuseaddr=True):
         self.port = port
         self.host = host
         self.backlog = backlog

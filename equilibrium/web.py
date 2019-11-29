@@ -1,4 +1,5 @@
 import pathlib
+from typing import Tuple
 
 import flask
 
@@ -25,7 +26,13 @@ def user_page(user_id):
     return flask.render_template('/user.html', title=f"Equilibrium BCI: User {user_id}", rows=rows)
 
 
-def run_webserver(address, data_dir):
+def run_webserver(address: Tuple[str, int], data_dir: str):
+    """
+    Set up a web server, which will serve the data contained in the given folder.
+
+    :param address: The address to bind the server to.
+    :param data_dir: The path to the directory for the server to load data from.
+    """
     data_path = pathlib.Path(data_dir)
     app.config["data_path"] = data_path
     app.run(host=address[0], port=address[1])
