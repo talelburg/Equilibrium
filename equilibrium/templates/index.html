@@ -1,0 +1,10 @@
+<!-- index.html -->
+{% extends 'layout.html' %}
+
+{% block content %}
+    <ul>
+        {% for user_id in users %}
+            <li><a href="/users/{{ user_id }}">user {{ user_id }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
