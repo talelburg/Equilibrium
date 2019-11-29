@@ -62,4 +62,4 @@ The ``web`` subcommand runs a web server at the specified address, using the spe
 
 .. code:: bash
 
-    $ python -m equilibrium run server [ADDRESS] [DATA_DIR]
+    $ python -m equilibrium run web [ADDRESS] [DATA_DIR]
