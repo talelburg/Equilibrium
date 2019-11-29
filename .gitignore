@@ -1,3 +1,4 @@
 /.env/*
 /.idea/*
 /docs/build/*
+/.pytest_cache/*
