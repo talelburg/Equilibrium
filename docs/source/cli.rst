@@ -27,57 +27,39 @@ To see its version, run:
     $ python -m equilibrium --version
     equilibrium, version 0.5.0
 
-The ``client`` Command
--------------------
-
-To run the ``client`` command:
-
-.. code:: bash
-
-    $ python -m equilibrium client [SUBCOMMAND] [ARGS]
-
-The ``upload`` subcommand
+The ``upload`` Command
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The ``upload`` subcommand uploads a user's thought to the specified server
 
 .. code:: bash
 
-    $ python -m equilibrium foo upload [ADDRESS] [USER_ID] [THOUGHT]
+    $ python -m equilibrium upload [ADDRESS] [USER_ID] [THOUGHT]
     foo
 
-The ``server`` Command
+The ``run`` Command
 -------------------
 
-To run the ``server`` command:
+To run the ``run`` command:
 
 .. code:: bash
 
-    $ python -m equilibrium server [SUBCOMMAND] [ARGS]
+    $ python -m equilibrium run [SUBCOMMAND] [ARGS]
 
-The ``run`` subcommand
+The ``server`` subcommand
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The ``run`` subcommand runs a server at the specified address, using the specified data directory.
+The ``server`` subcommand runs a server at the specified address, using the specified data directory.
 
 .. code:: bash
 
-    $ python -m equilibrium server run [ADDRESS] [DATA_DIR]
+    $ python -m equilibrium run server [ADDRESS] [DATA_DIR]
 
-The ``web`` Command
+The ``web`` subcommand
 --------------------
 
-To run the ``web`` command:
+The ``web`` subcommand runs a web server at the specified address, using the specified data directory.
 
 .. code:: bash
 
-    $ python -m equilibrium web [SUBCOMMAND] [ARGS]
-
-The ``run`` subcommand
-~~~~~~~~~~~~~~~~~~~~~~
-
-The ``run`` subcommand runs a web server at the specified address, using the specified data directory.
-
-.. code:: bash
-
-    $ python -m equilibrium server run [ADDRESS] [DATA_DIR]
+    $ python -m equilibrium run server [ADDRESS] [DATA_DIR]

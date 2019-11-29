@@ -14,7 +14,7 @@ class Thought:
 
     def __init__(self, user_id: int, timestamp: datetime.datetime, thought: str):
         self.user_id = user_id
-        self.timestamp = timestamp
+        self.timestamp = timestamp.astimezone(pytz.utc)
         self.thought = thought
 
     def __repr__(self):

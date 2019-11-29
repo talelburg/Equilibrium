@@ -38,12 +38,7 @@ def main(quiet=False, include_traceback=False):
     log.include_traceback = include_traceback
 
 
-@main.group()
-def client():
-    pass
-
-
-@client.command("upload")
+@main.command("upload")
 @click.argument("address", type=str)
 @click.argument("user_id", type=int)
 @click.argument("thought", type=str)
@@ -52,26 +47,21 @@ def client_upload(address, user_id, thought):
 
 
 @main.group()
-def server():
+def run():
     pass
 
 
-@server.command("run")
+@run.command("server")
 @click.argument("address", type=str)
 @click.argument("data_dir", type=str)
-def server_run(address, data_dir):
+def run_server(address, data_dir):
     equilibrium.run_server(normalize_address(address), data_dir)
 
 
-@main.group()
-def web():
-    pass
-
-
-@web.command("run")
+@run.command("web")
 @click.argument("address", type=str)
 @click.argument("data_dir", type=str)
-def web_run(address, data_dir):
+def run_web(address, data_dir):
     equilibrium.run_webserver(normalize_address(address), data_dir)
 
 
