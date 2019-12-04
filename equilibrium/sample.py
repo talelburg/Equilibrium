@@ -1,4 +1,4 @@
-from construct import Struct, Long, PascalString, Int, Enum, Bytes, GreedyRange, Double, Byte, this
+from construct import Struct, Long, PascalString, Int, Enum, Bytes, GreedyRange, Double, Byte, this, Single
 
 
 def image(data_format):
@@ -33,12 +33,12 @@ Sample = Struct(
             w=Double,
         ),
         color_image=image(Byte[3]),
-        depth_image=image(Double),
+        depth_image=image(Single),
         feelings=Struct(
-            hunger=Double,
-            thirst=Double,
-            exhaustion=Double,
-            happiness=Double,
+            hunger=Single,
+            thirst=Single,
+            exhaustion=Single,
+            happiness=Single,
         )
     )),
 )
