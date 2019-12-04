@@ -65,6 +65,12 @@ def run_web(address, data_dir):
     equilibrium.run_webserver(normalize_address(address), data_dir)
 
 
+@main.command("read")
+@click.argument("filename", type=str)
+def read_sample(filename):
+    print(equilibrium.Sample.parse_file(filename))
+
+
 if __name__ == "__main__":
     try:
         main(prog_name="equilibrium")
