@@ -1,5 +1,9 @@
 import socket
 
+from construct import PascalString, Int
+
+Message = PascalString(Int, "utf-8")
+
 
 class Connection:
     """
@@ -41,6 +45,9 @@ class Connection:
         """
         self.socket.sendall(data)
 
+    def send_message(self, data: bytes):
+        self.send(Message.build(data))
+
     def receive(self, size: int) -> bytes:
         """
         Read data from the connection until a specific size has been read.
@@ -56,6 +63,12 @@ class Connection:
                 raise RuntimeError("Connection closed")
             data += new
         return data
+
+    def receive_message(self) -> str:
+        data = self.socket.recv(4)
+        message_size = Int.parse(data)
+        data += self.socket.recv(message_size)
+        return Message.parse(data)
 
     def close(self):
         self.socket.close()
