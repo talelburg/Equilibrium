@@ -1,14 +1,5 @@
 from construct import Struct, Long, PascalString, Int, Enum, Bytes, GreedyRange, Double, Byte, this, Single
 
-
-def image(data_format):
-    return Struct(
-        width=Int,
-        height=Int,
-        data=data_format[this.width * this.height],
-    )
-
-
 Sample = Struct(
     user_information=Struct(
         user_id=Long,
@@ -32,8 +23,16 @@ Sample = Struct(
             z=Double,
             w=Double,
         ),
-        color_image=image(Byte[3]),
-        depth_image=image(Single),
+        color_image=Struct(
+            width=Int,
+            height=Int,
+            data=Byte[3][this.width * this.height],
+        ),
+        depth_image=Struct(
+            width=Int,
+            height=Int,
+            data=Single[this.width * this.height],
+        ),
         feelings=Struct(
             hunger=Single,
             thirst=Single,
