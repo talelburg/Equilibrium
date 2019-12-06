@@ -1,7 +1,6 @@
-from .client import upload_thought
+from .client import upload_sample
 from .sample import Sample
-from .server import run_server
-from .thought import Thought
+from .server import Server
 from .web import run_webserver
 
-version = "0.5.0"
+version = "0.6.0"

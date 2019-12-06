@@ -1,8 +1,11 @@
 import socket
 
-from construct import PascalString, Int
+from construct import Struct, Default, Int32ul, len_, this, Bytes
 
-Message = PascalString(Int, "utf-8")
+Message = Struct(
+    length=Default(Int32ul, len_(this.message)),
+    message=Bytes(this.length),
+)
 
 
 class Connection:
@@ -46,7 +49,7 @@ class Connection:
         self.socket.sendall(data)
 
     def send_message(self, data: bytes):
-        self.send(Message.build(data))
+        self.send(Message.build({"message": data}))
 
     def receive(self, size: int) -> bytes:
         """
@@ -64,11 +67,11 @@ class Connection:
             data += new
         return data
 
-    def receive_message(self) -> str:
-        data = self.socket.recv(4)
-        message_size = Int.parse(data)
-        data += self.socket.recv(message_size)
-        return Message.parse(data)
+    def receive_message(self) -> bytes:
+        data = self.receive(4)
+        message_size = Int32ul.parse(data)
+        data += self.receive(message_size)
+        return Message.parse(data).message
 
     def close(self):
         self.socket.close()
