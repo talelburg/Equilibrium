@@ -1,11 +1,11 @@
 Equilibrium API Reference
 =======================================
 
-Thought
+Sample
 ~~~~~~~
 
-.. autoclass:: equilibrium.Thought
-   :members:
+.. autoclass:: equilibrium.Sample
+   :members: Sample
 
 client
 ~~~~~~
@@ -17,7 +17,7 @@ server
 ~~~~~~
 
 .. automodule:: equilibrium.server
-   :members: run_server
+   :members: Server
 
 web
 ~~~

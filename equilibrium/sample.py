@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 from construct import Struct, Int64ul, PascalString, Int32ul, Enum, Bytes, GreedyRange, Float64l, Int8ul, this, \
     Float32l, Adapter, ExprValidator, obj_
@@ -72,6 +73,15 @@ Snapshot = Struct(
 
 
 def Sample(hook=None):
+    """
+    Return a ``construct`` Struct to parse the sample format.
+
+    When invoked with no argument, the Struct holds a list of all snapshots parsed.
+    
+    When invoked with an argument, it is assumed to be a processing hook, called on each snapshot as it is parsed.
+    Each snapshot is then discarded (the list returned is empty).
+    :param hook: The hook to called on each snapshot, or None
+    """
     if hook is not None:
         return Struct(
             user_information=UserInformation,

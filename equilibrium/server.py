@@ -30,7 +30,6 @@ class Server:
             self.data_path.mkdir(parents=True)
         with Listener(self.port) as listen:
             while True:
-                print("Waiting for connection...")
                 conn = listen.accept()
                 handler = ClientHandler(conn, self.data_path)
                 handler.start()
@@ -88,24 +87,18 @@ class ClientHandler(threading.Thread):
         self.data_path = data_path
 
     def run(self):
-        print("Connection thread started")
-        print("Receiving hello message")
         hello_message = self.connection.receive_message()
         hello = Hello.parse(hello_message)
         user_path = self.data_path / f'{hello.user_id}'
         if not user_path.exists():
             user_path.mkdir()
         config = Config.build({"fields": list(Server.fields.keys())})
-        print("Sending config message")
         self.connection.send_message(config)
-        print("Receiving snapshot message")
         snapshot_message = self.connection.receive_message()
         snapshot = Snapshot.parse(snapshot_message)
         snapshot_path = user_path / f'{snapshot.timestamp:%Y-%m-%d_%H-%M-%S-%f}'
         if not snapshot_path.exists():
             snapshot_path.mkdir()
         with self.lock:
-            print("Parsing snapshot fields")
             Server.parse(snapshot_path, snapshot)
-        print("Closing connection")
         self.connection.close()

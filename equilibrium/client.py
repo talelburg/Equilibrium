@@ -7,7 +7,7 @@ from .utils import Connection
 
 def upload_sample(address: Tuple[str, int], sample_path: str):
     """
-    Upload a user's thought to a server.
+    Upload a user's sample to a server.
 
     :param address: The address of the server.
     :param sample_path: Path of the sample file to be read.
