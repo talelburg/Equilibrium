@@ -38,31 +38,45 @@ def main(quiet=False, include_traceback=False):
     log.include_traceback = include_traceback
 
 
-@main.command("upload")
-@click.argument("address", type=str)
-@click.argument("user_id", type=int)
-@click.argument("thought", type=str)
-def client_upload(address, user_id, thought):
-    equilibrium.upload_thought(normalize_address(address), user_id, thought)
-
-
 @main.group()
-def run():
+def client():
     pass
 
 
-@run.command("server")
+@client.command("run")
 @click.argument("address", type=str)
-@click.argument("data_dir", type=str)
-def run_server(address, data_dir):
-    equilibrium.run_server(normalize_address(address), data_dir)
+@click.argument("sample_path", type=click.Path(exists=True, dir_okay=False))
+def run_client(address, sample_path):
+    equilibrium.upload_sample(normalize_address(address), sample_path)
 
 
-@run.command("web")
-@click.argument("address", type=str)
-@click.argument("data_dir", type=str)
-def run_web(address, data_dir):
-    equilibrium.run_webserver(normalize_address(address), data_dir)
+@main.group()
+def server():
+    pass
+
+
+@server.command("run")
+@click.argument("port", type=int)
+@click.argument("data_dir", type=click.Path(exists=True, file_okay=False))
+def run_server(port, data_dir):
+    equilibrium.Server(port, data_dir).run()
+
+
+@main.command("read")
+@click.argument("filename", type=click.Path(exists=True, dir_okay=False))
+def read_sample(filename):
+    info = equilibrium.sample.UserInformation.parse_file(filename)
+    print(f"User {info.user_id}: {info.username}, born {info.birthdate:%B %d, %Y} ({info.gender})")
+
+    def print_hook(obj, ctx):
+        translation = (obj.translation.x, obj.translation.y, obj.translation.z)
+        rotation = (obj.rotation.x, obj.rotation.y, obj.rotation.z, obj.rotation.w)
+        print(f"Snapshot from {obj.timestamp:%B %d, %Y at %H:%M:%S.%f} at {translation} / {rotation} "
+              f"with a {obj.color_image.width}x{obj.color_image.height} color image "
+              f"and a {obj.depth_image.width}x{obj.depth_image.height} depth image")
+        del obj
+
+    equilibrium.Sample(print_hook).parse_file(filename)
 
 
 if __name__ == "__main__":

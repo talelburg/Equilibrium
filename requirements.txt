@@ -4,7 +4,7 @@ Babel==2.7.0
 certifi==2019.11.28
 chardet==3.0.4
 Click==7.0
-codecov==2.0.15
+construct==2.9.45
 coverage==4.5.4
 docutils==0.15.2
 Flask==1.1.1
@@ -13,8 +13,9 @@ imagesize==1.1.0
 itsdangerous==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
-more-itertools==7.2.0
+more-itertools==8.0.2
 packaging==19.2
+Pillow==6.2.1
 pluggy==0.13.1
 py==1.8.0
 Pygments==2.5.2
@@ -25,7 +26,7 @@ pytz==2019.3
 requests==2.22.0
 six==1.13.0
 snowballstemmer==2.0.0
-Sphinx==2.2.1
+Sphinx==2.2.2
 sphinxcontrib-applehelp==1.0.1
 sphinxcontrib-devhelp==1.0.1
 sphinxcontrib-htmlhelp==1.0.2

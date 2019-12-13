@@ -35,46 +35,48 @@ An implementation of a Brain-Computer Interface. See [full documentation](https:
 
 The `equilibrium` packages provides the following functionality:
 
-- `Thought`
+- `Sample`
 
-    This class encapsulates the concept of a thought, allowing for easy 
-    manipulation and representation of thoughts.
-
-    In addition, it provides the `serialize` method to generate a compact 
-    representation of a thought, and the `deserialize` class method to generate
-    a thought object from such a compact representation.
-
+    This is a function that returns a ``construct`` Struct to parse the sample format.
+    When invoked with no argument, the Struct holds a list of all snapshots parsed.
+    When invoked with an argument, it is assumed to be a processing hook, called on
+    each snapshot as it is parsed. Each snapshot is then discarded (the list returned 
+    is empty).
+    
     ```pycon
-    >>> from equilibrium import Thought
-    >>> # assume dt is a pre-existing datetime object precise to seconds
-    >>> t = Thought(1, dt, "Hello")
-    >>> t
-    Thought(user_id=1, timestamp=datetime.datetime(...), thought='Hello')
-    >>> t.serialize()
-    b'\x01\x00\x00\x00\x00\x00\x00\x00...\x05\x00\x00\x00Hello'
-    >>> Thought.deserialize(_)
-    Thought(user_id=1, timestamp=datetime.datetime(...), thought='Hello')
-    >>> Thought.deserialize(t.serialize()) == t
-    True
+    >>> from equilibrium import Sample
+    >>> Sample().parse_file('sample.mind')
+    Container(..., snapshots=ListContainer([Container(...)]))
+    >>> Sample(hook).parse_file('sample.mind')
+    Container(..., snapshots=ListContainer([]))
+    >>> # hook was called on each snapshot 
     ```
 
-- `upload_thought`
+- `upload_sample`
 
-    This function uploads a user's thought to a server.
+    This function uploads a user Sample to a server.
 
     ```pycon
-    >>> from equilibrium import upload_thought
-    >>> upload_thought(address=(HOST, PORT), user_id=1, thought="Hello")
+    >>> from equilibrium import upload_sample
+    >>> upload_sample(address=(HOST, PORT), sample_path="/path/to/sample/file")
     ```
  
-- `run_server`
+- `Server`
 
-    This function starts a server that handles incoming connections,
-    and stores their data.
+    This is a class encapsulating the server.
+    It can start listening by using the ``run`` method.
+    The class also provides the ``parses`` decorator, to register parsers for 
+    snapshot fields, and the ``parse`` method, to parse all supported fields of 
+    specific snapshot.
 
     ```pycon
-    >>> from equilibrium import run_server
-    >>> run_server(address=(HOST, PORT), data_dir="/path/to/data/dir")
+    >>> from equilibrium import Server
+    >>> s = Server(port=PORT, data_dir="/path/to/data/dir")
+    >>> s.run() # This accepts connections until interrupted
+    >>> @Server.parse('fieldname')
+    ... def parse_fieldname(directory, snapshot): # These are the parameters of a parser
+    ...     pass
+    >>> Server.parse(directory="/directory/of/snapshot", snapshot=SNAPSHOT) 
     ```
 
 - `run_webserver`
@@ -98,22 +100,25 @@ or `--traceback` flag to show the full traceback when an exception is raised
 (by default, only the error message is printed, and the program exits with a
 non-zero code).
 
-The CLI provides the `upload` command:
+The CLI provides the `client` command, with the `run` subcommand:
 
 ```shell script
-$ python -m equilibrium upload "127.0.0.1:5000" 1 Hello
+$ python -m equilibrium client run "127.0.0.1:5000" sample.mind
 $
 ```
 
-The CLI further provides the `run` command, with the `server` and `web` subcommands.
+The CLI further provides the `server` command, with the `run` subcommand.
 
 ```shell script
-$ python -m equilibrium run server "127.0.0.1:5000" /data
-^C
-$ python -m equilibrium run web "127.0.0.1:5001" /data
+$ python -m equilibrium server run 5000 /data
 ...
 ```
 
+Finally, the CLI provides the `read` command:
+```shell script
+$ python -m equilibrium read sample.mind
+...
+```
 
 Do note that each command's options should be passed to *that* command, so for
 example the `-q` and `-t` options should be passed to `equilibrium`, not `run` or

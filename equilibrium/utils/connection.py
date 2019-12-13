@@ -1,5 +1,12 @@
 import socket
 
+from construct import Struct, Default, Int32ul, len_, this, Bytes
+
+Message = Struct(
+    length=Default(Int32ul, len_(this.message)),
+    message=Bytes(this.length),
+)
+
 
 class Connection:
     """
@@ -41,6 +48,9 @@ class Connection:
         """
         self.socket.sendall(data)
 
+    def send_message(self, data: bytes):
+        self.send(Message.build({"message": data}))
+
     def receive(self, size: int) -> bytes:
         """
         Read data from the connection until a specific size has been read.
@@ -56,6 +66,12 @@ class Connection:
                 raise RuntimeError("Connection closed")
             data += new
         return data
+
+    def receive_message(self) -> bytes:
+        data = self.receive(4)
+        message_size = Int32ul.parse(data)
+        data += self.receive(message_size)
+        return Message.parse(data).message
 
     def close(self):
         self.socket.close()

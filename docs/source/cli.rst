@@ -27,39 +27,51 @@ To see its version, run:
     $ python -m equilibrium --version
     equilibrium, version 0.5.0
 
-The ``upload`` Command
+The ``client`` Command
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The ``upload`` subcommand uploads a user's thought to the specified server
+This command groups enables usage of the client functionality of the package. To run it:
 
 .. code:: bash
 
-    $ python -m equilibrium upload [ADDRESS] [USER_ID] [THOUGHT]
-    foo
+    $ python -m equilibrium client [SUBCOMMAND] [ARGS]
 
-The ``run`` Command
-~~~~~~~~~~~~~~~~~~~
-
-To run the ``run`` command:
-
-.. code:: bash
-
-    $ python -m equilibrium run [SUBCOMMAND] [ARGS]
-
-The ``server`` subcommand
--------------------------
-
-The ``server`` subcommand runs a server at the specified address, using the specified data directory.
-
-.. code:: bash
-
-    $ python -m equilibrium run server [ADDRESS] [DATA_DIR]
-
-The ``web`` subcommand
+The ``run`` Subcommand
 ----------------------
 
-The ``web`` subcommand runs a web server at the specified address, using the specified data directory.
+The ``run`` subcommand instructs the client to stream the given sample to the given server.
+``SAMPLE_PATH`` must exist, and must be a file.
 
 .. code:: bash
 
-    $ python -m equilibrium run web [ADDRESS] [DATA_DIR]
+    $ python -m equilibrium upload [ADDRESS] [SAMPLE_PATH]
+    ...
+
+The ``server`` Command
+~~~~~~~~~~~~~~~~~~~
+
+To run the ``server`` command:
+
+.. code:: bash
+
+    $ python -m equilibrium server [SUBCOMMAND] [ARGS]
+
+The ``run`` Subcommand
+-------------------------
+
+The ``run`` subcommand runs a server to listen on the specified port, using the specified data directory.
+``DATA_DIR`` must exist, and must be a directory.
+
+.. code:: bash
+
+    $ python -m equilibrium server run [PORT] [DATA_DIR]
+
+The ``read`` Command
+----------------------
+
+The ``read`` command parses the file at the given path, and prints information regarding the sample encoded in it.
+``SAMPLE_PATH`` must exist, and must be a file.
+
+.. code:: bash
+
+    $ python -m equilibrium read [SAMPLE_PATH]
