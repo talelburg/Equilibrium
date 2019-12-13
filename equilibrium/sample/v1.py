@@ -1,7 +1,7 @@
 import datetime
 
-from construct import Struct, Int64ul, PascalString, Int32ul, Enum, Bytes, this, Default, len_, Float64l, Int8ul, \
-    Float32l, ExprValidator, obj_, Adapter
+from construct import Struct, Int64ul, PascalString, Int32ul, Enum, Bytes, GreedyRange, Float64l, Int8ul, this, \
+    Float32l, Adapter, ExprValidator, obj_
 
 
 class DatetimeSecondAdapter(Adapter):
@@ -14,21 +14,6 @@ class DatetimeSecondAdapter(Adapter):
 
 DatetimeSeconds = DatetimeSecondAdapter(Int32ul)
 
-Hello = Struct(
-    user_id=Int64ul,
-    username=PascalString(Int32ul, "utf-8"),
-    birthdate=DatetimeSeconds,
-    gender=Enum(Bytes(1),
-                male=b'm',
-                female=b'f',
-                other=b'o'),
-)
-
-Config = Struct(
-    amount=Default(Int32ul, len_(this.fields)),
-    fields=PascalString(Int32ul, "utf-8")[this.amount]
-)
-
 
 class DatetimeMilisecondAdapter(Adapter):
     def _decode(self, obj, context, path):
@@ -39,6 +24,16 @@ class DatetimeMilisecondAdapter(Adapter):
 
 
 DatetimeMiliseconds = DatetimeMilisecondAdapter(Int64ul)
+
+UserInformation = Struct(
+    user_id=Int64ul,
+    username=PascalString(Int32ul, "utf-8"),
+    birthdate=DatetimeSeconds,
+    gender=Enum(Bytes(1),
+                male=b'm',
+                female=b'f',
+                other=b'o'),
+)
 
 Snapshot = Struct(
     timestamp=DatetimeMiliseconds,
@@ -74,3 +69,33 @@ Snapshot = Struct(
         happiness=ExprValidator(Float32l, -1 < obj_ < 1),
     )
 )
+
+
+def Sample(hook=None):
+    """
+    Return a ``construct`` Struct to parse the sample format.
+
+    When invoked with no argument, the Struct holds a list of all snapshots parsed.
+    
+    When invoked with an argument, it is assumed to be a processing hook, called on each snapshot as it is parsed.
+    Each snapshot is then discarded (the list returned is empty).
+    :param hook: The hook to called on each snapshot, or None
+    """
+    if hook is not None:
+        return Struct(
+            user_information=UserInformation,
+            snapshots=GreedyRange(Snapshot * hook, discard=True),
+        )
+    else:
+        return Struct(
+            user_information=UserInformation,
+            snapshots=GreedyRange(Snapshot),
+        )
+
+
+class Adapter:
+    def parse(self, path: str):
+        return Sample().parse_file(path)
+
+    def build(self, obj):
+        return Sample().build(obj)

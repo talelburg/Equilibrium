@@ -1,8 +1,10 @@
+import base64
 from typing import Tuple
 
-from .protocol import Hello, Config, Snapshot
-from .sample import Sample
-from .utils import Connection
+import requests
+
+from .equilibrium_pb2 import Snapshot
+from .sample import SampleReader
 
 
 def upload_sample(address: Tuple[str, int], sample_path: str):
@@ -12,37 +14,18 @@ def upload_sample(address: Tuple[str, int], sample_path: str):
     :param address: The address of the server.
     :param sample_path: Path of the sample file to be read.
     """
+    sample = SampleReader(2).parse(sample_path)
+    base_url = f"http://{address[0]}:{address[1]}"
+    config = requests.get(base_url + "/config").json()
+    for snapshot in sample.snapshots:
+        supported_snapshot = Snapshot()
+        supported_snapshot.datetime = snapshot.datetime
+        for field in config:
+            getattr(supported_snapshot, field).ParseFromString(getattr(snapshot, field).SerializeToString())
+        requests.post(base_url + "/snapshot", json={
+            "user_information": base64.b64encode(sample.user.SerializeToString()).decode('utf-8'),
+            "snapshot": base64.b64encode(supported_snapshot.SerializeToString()).decode('utf-8'),
+        })
 
-    def send_hook(obj, ctx):
-        snapshot = obj
-        with Connection.connect(*address) as connection:
-            hello = Hello.build(ctx.user_information)
-            connection.send_message(hello)
-            config_message = connection.receive_message()
-            config = Config.parse(config_message)
-            if "translation" not in config.fields:
-                snapshot.translation.x = 0
-                snapshot.translation.y = 0
-                snapshot.translation.z = 0
-            if "rotation" not in config.fields:
-                snapshot.rotation.x = 0
-                snapshot.rotation.y = 0
-                snapshot.rotation.z = 0
-                snapshot.rotation.w = 0
-            if "color_image" not in config.fields:
-                snapshot.color_image.width = 0
-                snapshot.color_image.height = 0
-                snapshot.color_image.data = []
-            if "depth_image" not in config.fields:
-                snapshot.depth_image.width = 0
-                snapshot.depth_image.height = 0
-                snapshot.depth_image.data = []
-            if "emotions" not in config.fields:
-                snapshot.feelings.hunger = 0
-                snapshot.feelings.thirst = 0
-                snapshot.feelings.exhaustion = 0
-                snapshot.feelings.happiness = 0
-            supported_snapshot = Snapshot.build(snapshot)
-            connection.send_message(supported_snapshot)
 
-    Sample(send_hook).parse_file(sample_path)
+

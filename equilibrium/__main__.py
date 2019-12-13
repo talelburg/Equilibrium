@@ -1,4 +1,6 @@
+import datetime
 import os
+import pathlib
 import sys
 import traceback
 from typing import Tuple
@@ -59,13 +61,19 @@ def server():
 @click.argument("port", type=int)
 @click.argument("data_dir", type=click.Path(exists=True, file_okay=False))
 def run_server(port, data_dir):
-    equilibrium.Server(port, data_dir).run()
+    equilibrium.run_server(port, data_dir)
 
 
 @main.command("read")
 @click.argument("filename", type=click.Path(exists=True, dir_okay=False))
-def read_sample(filename):
-    info = equilibrium.sample.UserInformation.parse_file(filename)
+@click.argument('version', type=int, default=2)
+def read_sample(filename, version):
+    versions = {1: read_sample_v1, 2: read_sample_v2}
+    versions[version](filename)
+
+
+def read_sample_v1(filename):
+    info = equilibrium.sample.v1.UserInformation.parse_file(filename)
     print(f"User {info.user_id}: {info.username}, born {info.birthdate:%B %d, %Y} ({info.gender})")
 
     def print_hook(obj, ctx):
@@ -76,7 +84,22 @@ def read_sample(filename):
               f"and a {obj.depth_image.width}x{obj.depth_image.height} depth image")
         del obj
 
-    equilibrium.Sample(print_hook).parse_file(filename)
+    equilibrium.sample.v1.Sample(print_hook).parse_file(filename)
+
+
+def read_sample_v2(filename):
+    sample = equilibrium.sample.SampleReader(2).parse(filename)
+    print(f"User {sample.user.user_id}: {sample.user.username}, "
+          f"born {datetime.datetime.fromtimestamp(sample.user.birthday):%B %d, %Y} ({sample.user.gender})")
+    for snapshot in sample.snapshots:
+        pose = snapshot.pose
+        translation = (pose.translation.x, pose.translation.y, pose.translation.z)
+        rotation = (pose.rotation.x, pose.rotation.y, pose.rotation.z, pose.rotation.w)
+        print(f"Snapshot from {datetime.datetime.fromtimestamp(snapshot.datetime / 1000):%B %d, %Y at %H:%M:%S.%f}"
+              f" at {translation} / {rotation} with a {snapshot.color_image.width}x{snapshot.color_image.height}"
+              f" color image and a {snapshot.depth_image.width}x{snapshot.depth_image.height} depth image, feeling"
+              f" hunger: {snapshot.feelings.hunger}, thirst: {snapshot.feelings.thirst},"
+              f" exhaustion: {snapshot.feelings.exhaustion}, happiness: {snapshot.feelings.happiness}")
 
 
 if __name__ == "__main__":

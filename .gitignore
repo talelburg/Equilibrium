@@ -4,3 +4,4 @@
 /.pytest_cache/*
 /.coverage
 /*.mind
+/*.mind.gz
