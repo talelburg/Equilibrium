@@ -1,0 +1,16 @@
+Still to do:
+* Implement by specification
+    * Client - DONE
+    * Server
+        * Fix path used to save things
+        * Create Dockerfile (???)
+    * Parsers
+    * Saver
+    * Database
+    * API
+    * CLI
+    * GUI
+* Write tests
+* Document
+* Deployment scripts
+* Final pass
