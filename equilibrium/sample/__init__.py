@@ -1,1 +1,1 @@
-from .sample_reader import SampleReader
+from .sample_handler import SampleHandler

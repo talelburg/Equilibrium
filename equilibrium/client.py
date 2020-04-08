@@ -1,31 +1,22 @@
-import base64
-from typing import Tuple
-
+import bson
 import requests
 
-from .equilibrium_pb2 import Snapshot
-from .sample import SampleReader
+from .sample import SampleHandler
 
 
-def upload_sample(address: Tuple[str, int], sample_path: str):
+def upload_sample(host: str, port: int, sample_path: str):
     """
     Upload a user's sample to a server.
 
-    :param address: The address of the server.
+    :param host: IP address of the server to upload to.
+    :param port: Port to be used in communication with server.
     :param sample_path: Path of the sample file to be read.
     """
-    sample = SampleReader(2).parse(sample_path)
-    base_url = f"http://{address[0]}:{address[1]}"
+    base_url = f"http://{host}:{port}"
+    handler = SampleHandler(2)
+    parsing = handler.parse(sample_path)
+    user_info = next(parsing)
     config = requests.get(base_url + "/config").json()
-    for snapshot in sample.snapshots:
-        supported_snapshot = Snapshot()
-        supported_snapshot.datetime = snapshot.datetime
-        for field in config:
-            getattr(supported_snapshot, field).ParseFromString(getattr(snapshot, field).SerializeToString())
-        requests.post(base_url + "/snapshot", json={
-            "user_information": base64.b64encode(sample.user.SerializeToString()).decode('utf-8'),
-            "snapshot": base64.b64encode(supported_snapshot.SerializeToString()).decode('utf-8'),
-        })
-
-
-
+    for snapshot in parsing:
+        supported_snapshot = handler.limit_snapshot_fields(snapshot, config)
+        requests.post(base_url + "/snapshot", data=bson.dumps(handler.build_dict(user_info, supported_snapshot)))
