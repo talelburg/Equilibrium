@@ -1,20 +1,20 @@
 import bson
 import requests
 
-from .sample import SampleHandler
+from equilibrium.sample import SampleHandler
 
 
-def upload_sample(host: str, port: int, sample_path: str):
+def upload_sample(host: str, port: int, path: str):
     """
     Upload a user's sample to a server.
 
     :param host: IP address of the server to upload to.
     :param port: Port to be used in communication with server.
-    :param sample_path: Path of the sample file to be read.
+    :param path: Path of the sample file to be read.
     """
     base_url = f"http://{host}:{port}"
     handler = SampleHandler(2)
-    parsing = handler.parse(sample_path)
+    parsing = handler.parse(path)
     user_info = next(parsing)
     config = requests.get(base_url + "/config").json()
     for snapshot in parsing:
