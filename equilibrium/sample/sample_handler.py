@@ -16,22 +16,27 @@ class SampleHandler:
         """
         return self.adapter.parse(path)
 
-    def build_dict(self, user_info, snapshot):
+    def build_dict(self, d):
         """
-        Build a dictionary representing one snapshot with user information, to be sent to the server.
+        Build a BSON-able dictionary from relevant data from the sample.
 
-        :param user_info: The user information to be sent.
-        :param snapshot: The snapshot to be sent.
-        :return: dictionary representing the snapshot with user information, to be sent to the server.
+        :param d: A dictionary of relevant data.
+        :return: A BSON-able dictionary.
         """
-        return self.adapter.build_dict(user_info, snapshot)
+        return self.adapter.build_dict(d)
 
-    def limit_snapshot_fields(self, snapshot, fields):
+    def recover_dict(self, d):
         """
-        Remove unsupported fields from the given snapshot.
+        Recover relevant data from a BSON-able dictionary.
 
-        :param snapshot: The snapshot to be transformed.
-        :param fields: The list of supported fields.
-        :return: A new snapshot, where non-supported fields have default values.
+        :param d: The BSON-able dictionary.
+        :return: A dictionary of relevant data.
         """
-        return self.adapter.limit(snapshot, fields)
+        return self.adapter.recover_dict(d)
+
+    def build_message(self, *args, **kwargs):
+        """
+        Build a message, intended to be published to a message queue, from relevant data from the sample.
+        """
+        return self.adapter.build_message(*args, **kwargs)
+

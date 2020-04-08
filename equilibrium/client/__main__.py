@@ -37,7 +37,8 @@ def main(quiet=False, include_traceback=False):
 @click.option("-p", "--port", type=int, default=8000)
 @click.argument("sample_path", type=click.Path(exists=True, dir_okay=False))
 def upload_sample(host, port, sample_path):
-    upload_sample(host=host, port=port, path=sample_path)
+    log(f"Uploading sample at {sample_path} to {host}:{port}")
+    equilibrium.client.upload_sample(host=host, port=port, path=sample_path)
 
 
 if __name__ == "__main__":

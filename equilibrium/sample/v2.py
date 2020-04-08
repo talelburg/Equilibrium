@@ -1,6 +1,9 @@
 import gzip
+import json
+import pathlib
 
 from construct import Int32ul
+from google.protobuf.json_format import MessageToJson
 
 from equilibrium.equilibrium_pb2 import User, Snapshot
 
@@ -21,15 +24,37 @@ class Adapter:
                 snapshot.ParseFromString(f.read(snapshot_length))
                 yield snapshot
 
-    def build_dict(self, user_info, snapshot):
+    def build_dict(self, d):
         return {
-            "user_information": user_info.SerializeToString(),
-            "snapshot": snapshot.SerializeToString()
+            "user_information": d["user_information"].SerializeToString(),
+            "snapshot": d["snapshot"].SerializeToString()
         }
 
-    def limit(self, snapshot, fields):
-        supported_snapshot = Snapshot()
-        supported_snapshot.datetime = snapshot.datetime
-        for field in fields:
-            getattr(supported_snapshot, field).ParseFromString(getattr(snapshot, field).SerializeToString())
-        return supported_snapshot
+    def recover_dict(self, d):
+        user_info = User()
+        user_info.ParseFromString(d["user_information"])
+        snapshot = Snapshot()
+        snapshot.ParseFromString(d["snapshot"])
+        return {"user_information": user_info, "snapshot": snapshot}
+
+    def build_message(self, user_info, snapshot, path):
+        """
+        Build a message, intended to be published to a message-queue, with provided user information and snapshot.
+
+        Large fields are saved to disk at the provided path to avoid large messages.
+
+        :param user_info: The user information.
+        :param snapshot: The snapshot.
+        :param path: The path to save large files at.
+        :return: The constructed message.
+        """
+        color_image_path = pathlib.Path(path) / "color_image.bin"
+        color_image_path.write_bytes(snapshot.color_image.data)
+        snapshot.color_image.ClearField('data')
+        depth_image_path = pathlib.Path(path) / "depth_image.bin"
+        depth_image_path.write_text(json.dumps(list(snapshot.depth_image.data)))
+        snapshot.depth_image.ClearField('data')
+        return json.dumps({
+            "user_information": MessageToJson(user_info),
+            "snapshot": MessageToJson(snapshot)
+        })

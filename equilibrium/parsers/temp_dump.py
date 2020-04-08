@@ -8,66 +8,6 @@ import flask
 from PIL import Image
 from matplotlib import pyplot
 
-from equilibrium.equilibrium_pb2 import User, Snapshot
-
-app = flask.Flask(__name__)
-
-
-@app.route("/config", methods=["GET"])
-def get_config():
-    return flask.jsonify([k for k in Server.fields])
-
-
-@app.route("/snapshot", methods=["POST"])
-def post_snapshot():
-    user_information = User()
-    user_information.ParseFromString(base64.b64decode(flask.request.json["user_information"]))
-    user_path = app.config['data_path'] / f'{user_information.user_id}'
-    if not user_path.exists():
-        user_path.mkdir()
-    snapshot = Snapshot()
-    snapshot.ParseFromString(base64.b64decode(flask.request.json["snapshot"]))
-    timestamp = datetime.datetime.fromtimestamp(snapshot.datetime / 1000)
-    snapshot_path = user_path / f'{timestamp:%Y-%m-%d_%H-%M-%S-%f}'
-    if not snapshot_path.exists():
-        snapshot_path.mkdir()
-    Server.parse(snapshot_path, snapshot)
-    return ""
-
-
-def run_server(port, data_dir):
-    app.config["data_path"] = pathlib.Path(data_dir)
-    app.run(port=port, threaded=True)
-
-
-class Server:
-    fields = {}
-
-    @classmethod
-    def parses(cls, *field_names):
-        """
-        Decorator to register parsers for snapshot fields.
-        """
-
-        def decorator(obj):
-            if inspect.isclass(obj):
-                parser = obj().parse
-            else:
-                parser = obj
-            for field_name in field_names:
-                cls.fields[field_name] = parser
-            return obj
-
-        return decorator
-
-    @classmethod
-    def parse(cls, directory: pathlib.Path, snapshot):
-        """
-        Parse a given snapshot. Calls registered parsers on received arguments.
-        """
-        for parser in set(cls.fields.values()):
-            parser(directory, snapshot)
-
 
 @Server.parses("pose")
 def parse_pose(directory, snapshot):

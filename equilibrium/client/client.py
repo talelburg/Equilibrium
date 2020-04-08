@@ -16,7 +16,9 @@ def upload_sample(host: str, port: int, path: str):
     handler = SampleHandler(2)
     parsing = handler.parse(path)
     user_info = next(parsing)
-    config = requests.get(base_url + "/config").json()
     for snapshot in parsing:
-        supported_snapshot = handler.limit_snapshot_fields(snapshot, config)
-        requests.post(base_url + "/snapshot", data=bson.dumps(handler.build_dict(user_info, supported_snapshot)))
+        bsonable = handler.build_dict({
+            "user_information": user_info,
+            "snapshot": snapshot
+        })
+        requests.post(base_url + "/snapshot", data=bson.dumps(bsonable))
