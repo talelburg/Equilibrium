@@ -6,6 +6,7 @@ import click
 
 import equilibrium
 from equilibrium.queue.queue_handler import QueueHandler
+from equilibrium.sample import SampleHandler
 from equilibrium.utils.cli import create_basic_cli
 
 main, log = create_basic_cli()
@@ -21,9 +22,10 @@ def run_server(host, port, url):
         snapshot = data["snapshot"]
 
         timestamp = datetime.datetime.fromtimestamp(snapshot.datetime / 1000)
-        snapshot_path = pathlib.Path(f"/home/user/Desktop/data/{user_info.user_id}/{timestamp:%Y-%m-%d_%H-%M-%S-%f}")
+        snapshot_path = pathlib.Path(
+            f"{equilibrium.__path__[0]}/../data/{user_info.user_id}/{timestamp:%Y-%m-%d_%H-%M-%S-%f}")
         snapshot_path.mkdir(parents=True, exist_ok=True)
-        message = equilibrium.sample.SampleHandler(2).build_message(user_info, snapshot, str(snapshot_path))
+        message = SampleHandler(2).build_message(user_info, snapshot, str(snapshot_path))
 
         queue_handler = QueueHandler(url)
         queue_handler.publish(exchange="", routing_key="snapshots", body=message)

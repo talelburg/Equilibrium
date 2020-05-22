@@ -2,6 +2,9 @@ from equilibrium.sample import v2
 
 
 class SampleHandler:
+    """
+    A class to handle operation on samples. Uses an adapter based on sample version.
+    """
     adapters = {2: v2.Adapter}
 
     def __init__(self, version: int):
@@ -39,4 +42,3 @@ class SampleHandler:
         Build a message, intended to be published to a message queue, from relevant data from the sample.
         """
         return self.adapter.build_message(*args, **kwargs)
-

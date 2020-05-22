@@ -24,7 +24,6 @@ def create_basic_cli():
     log = Log()
 
     @click.group()
-    @click.version_option(equilibrium.version)
     @click.option("-q", "--quiet", is_flag=True)
     @click.option("-t", "--include_traceback", is_flag=True)
     def main(quiet=False, include_traceback=False):
