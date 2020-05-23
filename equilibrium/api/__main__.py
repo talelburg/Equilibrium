@@ -10,7 +10,7 @@ main, log = create_basic_cli()
 
 @main.command("run-server")
 @click.option("-h", "--host", type=str, default="127.0.0.1")
-@click.option("-p", "--port", type=int, default=8000)
+@click.option("-p", "--port", type=int, default=5000)
 @click.option("-d", "--database", type=str, default="mongodb://127.0.0.1:27017")
 def run_server_cli(host, port, database):
     log(f"Setting up api server at {host}:{port} to serve data from {database}")
