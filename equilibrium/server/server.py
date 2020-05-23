@@ -1,4 +1,5 @@
-import bson
+import json
+
 import flask
 from flask import request
 
@@ -9,10 +10,10 @@ app = flask.Flask(__name__)
 
 @app.route("/snapshot", methods=["POST"])
 def post_snapshot():
-    data = request.data
-    bsonable = bson.loads(data)
-    data = SampleHandler("gzip_protobuf").dict_to_data(bsonable)
-    app.config["publish"](data)
+    json_dict = request.json
+    data = SampleHandler.json_to_data(json_dict)
+    message = json.dumps(SampleHandler.data_to_light_json(json_dict["sample_format"], data))
+    app.config["publish"](message)
     return ""
 
 

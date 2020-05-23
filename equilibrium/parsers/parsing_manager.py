@@ -31,11 +31,6 @@ class ParsingManager:
 
 def run_parser(parser_name, raw_data):
     json_dict = json.loads(raw_data)
-    data = SampleHandler("gzip_protobuf").json_to_data(json_dict)
-    return json.dumps({
-        "user_information": json_dict["user_information"],
-        "snapshot": json_dict["snapshot"],
-        "result_path": {
-            parser_name: str(ParsingManager().invoke(parser_name, data))
-        }
-    })
+    data = SampleHandler.json_to_data(json_dict)
+    json_dict["result"] = {parser_name: str(ParsingManager().invoke(parser_name, data))}
+    return json.dumps(json_dict)

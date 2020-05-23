@@ -4,10 +4,10 @@ services:
     image: "rabbitmq"
     expose:
       - "5672"
-  redis:
-    image: "redis"
+  mongodb:
+    image: "mongo"
     expose:
-      - "6379"
+      - "27017"
   server:
     build:
       context: .
@@ -15,7 +15,7 @@ services:
       args:
         host: "0.0.0.0"
         port: "8000"
-        url: "rabbitmq://rabbitmq:5672"
+        message_queue: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
     volumes:
@@ -24,16 +24,30 @@ services:
     restart: on-failure
     ports:
       - "8000:8000"
+  saver:
+    build:
+      context: .
+      dockerfile: ./equilibrium/saver/Dockerfile
+      args:
+        database: "mongodb://mongodb:27017"
+        message_queue: "rabbitmq://rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+      - mongodb
+    volumes:
+      - ./logs/saver:/logs
+    restart: on-failure
   pose_parser:
     build:
       context: .
       dockerfile: ./equilibrium/parsers/Dockerfile
       args:
         parser_name: "pose"
-        url: "rabbitmq://rabbitmq:5672"
+        message_queue: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
     volumes:
+      - ./equilibrium:/equilibrium
       - ./data:/data
       - ./logs/pose:/logs
     restart: on-failure
@@ -43,7 +57,7 @@ services:
       dockerfile: ./equilibrium/parsers/Dockerfile
       args:
         parser_name: "color_image"
-        url: "rabbitmq://rabbitmq:5672"
+        message_queue: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
     volumes:
@@ -56,7 +70,7 @@ services:
       dockerfile: ./equilibrium/parsers/Dockerfile
       args:
         parser_name: "depth_image"
-        url: "rabbitmq://rabbitmq:5672"
+        message_queue: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
     volumes:
@@ -69,7 +83,7 @@ services:
       dockerfile: ./equilibrium/parsers/Dockerfile
       args:
         parser_name: "feelings"
-        url: "rabbitmq://rabbitmq:5672"
+        message_queue: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
     volumes:

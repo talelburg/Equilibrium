@@ -1,10 +1,10 @@
 FROM python:3.8
-RUN pip install construct protobuf click furl pika pillow matplotlib
-COPY equilibrium/equilibrium_pb2.py /equilibrium/
-COPY equilibrium/utils/* /equilibrium/utils/
-COPY equilibrium/parsers/* /equilibrium/parsers/
+RUN pip install requests flask protobuf furl pymongo click pika matplotlib pillow
+COPY ./equilibrium/equilibrium_pb2.py /equilibrium/
+COPY ./equilibrium/parsers/ /equilibrium/parsers/
+COPY ./equilibrium/utils/ /equilibrium/utils/
 ARG parser_name
 ENV PARSER_NAME $parser_name
-ARG url="rabbitmq://rabbitmq:5672"
-ENV URL $url
-CMD python -m equilibrium.parsers -t run-parser $PARSER_NAME $URL > /logs/$(date +%Y-%m-%d_%H-%M-%S).log
+ARG message_queue="rabbitmq://rabbitmq:5672"
+ENV MESSAGE_QUEUE $message_queue
+CMD python -m equilibrium.parsers -t run-parser $PARSER_NAME -mq $MESSAGE_QUEUE > /logs/$(date +%Y-%m-%d_%H-%M-%S).log

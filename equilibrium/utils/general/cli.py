@@ -4,8 +4,6 @@ import traceback
 
 import click
 
-import equilibrium
-
 
 class Log:
     def __init__(self):

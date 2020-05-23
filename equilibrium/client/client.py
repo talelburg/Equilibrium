@@ -1,4 +1,5 @@
-import bson
+import os
+
 import requests
 
 from equilibrium.utils.sample import SampleHandler
@@ -13,12 +14,12 @@ def upload_sample(host: str, port: int, path: str):
     :param path: Path of the sample file to be read.
     """
     base_url = f"http://{host}:{port}"
-    handler = SampleHandler("gzip_protobuf")
-    parsing = handler.parse(path)
+    parsing = SampleHandler.parse(path)
+    _, sample_format = os.path.splitext(path)
     user_info = next(parsing)
     for snapshot in parsing:
-        bsonable = handler.data_to_dict({
+        full_json = SampleHandler.data_to_full_json(sample_format, {
             "user_information": user_info,
             "snapshot": snapshot
         })
-        requests.post(base_url + "/snapshot", data=bson.dumps(bsonable))
+        requests.post(base_url + "/snapshot", json=full_json)

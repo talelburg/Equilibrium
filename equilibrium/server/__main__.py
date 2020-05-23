@@ -1,12 +1,10 @@
-import json
 import sys
 
 import click
 
-import equilibrium
-from equilibrium.utils.queue import QueueHandler
-from equilibrium.utils.sample import SampleHandler
+from equilibrium.server import run_server
 from equilibrium.utils.general.cli import create_basic_cli
+from equilibrium.utils.queue import QueueHandler
 
 main, log = create_basic_cli()
 
@@ -14,16 +12,15 @@ main, log = create_basic_cli()
 @main.command("run-server")
 @click.option("-h", "--host", type=str, default="127.0.0.1")
 @click.option("-p", "--port", type=int, default=8000)
-@click.argument("url", type=str)
-def run_server(host, port, url):
-    def publish(data):
-        message = json.dumps(SampleHandler("gzip_protobuf").data_to_json(data))
-        queue_handler = QueueHandler(url)
-        log(f"Publishing message {message} to queue at {url} to be parsed")
+@click.option("-mq", "--message-queue", type=str, default="rabbitmq://127.0.0.1:5672")
+def run_server_cli(host, port, message_queue):
+    def publish(message):
+        queue_handler = QueueHandler(message_queue)
+        log(f"Publishing message {message} to queue at {message_queue} to be parsed")
         queue_handler.publish(exchange="needs_parsing", body=message)
 
-    log(f"Setting up server at {host}:{port} to publish to message-queue at {url}")
-    equilibrium.server.run_server(host=host, port=port, publish=publish)
+    log(f"Setting up server at {host}:{port} to publish to message-queue at {message_queue}")
+    run_server(host=host, port=port, publish=publish)
 
 
 if __name__ == "__main__":
