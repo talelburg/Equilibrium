@@ -1,11 +1,9 @@
-import json
-
 from equilibrium.parsers.parsing_manager import ParsingManager
 
 
 @ParsingManager.parses("pose")
 def parse_pose(snapshot, data_dir_path):
-    data = {
+    return {
         "translation": {
             "x": snapshot.pose.translation.x,
             "y": snapshot.pose.translation.y,
@@ -18,7 +16,3 @@ def parse_pose(snapshot, data_dir_path):
             "w": snapshot.pose.rotation.w,
         },
     }
-    result_path = data_dir_path / "pose.json"
-    with open(result_path, "w") as f:
-        json.dump(data, f, indent=4)
-    return result_path

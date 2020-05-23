@@ -5,7 +5,7 @@
     * Parsers - DONE
     * Saver - DONE
     * Database - DONE
-    * API
+    * API - api and cli done, still need to containerize (and validate it works!)
     * CLI
     * GUI
 * Write tests

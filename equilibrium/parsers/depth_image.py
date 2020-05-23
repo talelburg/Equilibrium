@@ -10,4 +10,8 @@ def parse_depth_image(snapshot, data_dir_path):
     data = [[data[i * width + j] for j in range(width)] for i in range(height)]
     result_path = data_dir_path / "depth_image.jpg"
     pyplot.imshow(data).write_png(str(result_path))
-    return result_path
+    return {
+        "height": height,
+        "width": width,
+        "data": str(result_path)
+    }

@@ -32,5 +32,5 @@ class ParsingManager:
 def run_parser(parser_name, raw_data):
     json_dict = json.loads(raw_data)
     data = SampleHandler.json_to_data(json_dict)
-    json_dict["result"] = {parser_name: str(ParsingManager().invoke(parser_name, data))}
+    json_dict["result"] = {parser_name: ParsingManager().invoke(parser_name, data)}
     return json.dumps(json_dict)
