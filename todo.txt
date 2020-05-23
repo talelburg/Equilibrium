@@ -1,12 +1,10 @@
-Still to do:
 * Implement by specification
     * Client - DONE
-    * Server
-        * Fix path used to save things
-        * Create Dockerfile (???)
-    * Parsers
-    * Saver
-    * Database
+    * Server - DONE
+    * Message Queue - DONE
+    * Parsers - DONE
+    * Saver - DONE
+    * Database - DONE
     * API
     * CLI
     * GUI
