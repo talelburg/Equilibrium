@@ -13,11 +13,11 @@ def upload_sample(host: str, port: int, path: str):
     :param path: Path of the sample file to be read.
     """
     base_url = f"http://{host}:{port}"
-    handler = SampleHandler(2)
+    handler = SampleHandler("gzip_protobuf")
     parsing = handler.parse(path)
     user_info = next(parsing)
     for snapshot in parsing:
-        bsonable = handler.build_dict({
+        bsonable = handler.data_to_dict({
             "user_information": user_info,
             "snapshot": snapshot
         })

@@ -15,7 +15,7 @@ class Log:
     def __call__(self, message):
         if self.quiet:
             return
-        if self.include_traceback and sys.exc_info():
+        if self.include_traceback and any(sys.exc_info()):
             message += os.linesep + traceback.format_exc().strip()
         click.echo(message)
 

@@ -11,7 +11,7 @@ app = flask.Flask(__name__)
 def post_snapshot():
     data = request.data
     bsonable = bson.loads(data)
-    data = SampleHandler(2).recover_dict(bsonable)
+    data = SampleHandler("gzip_protobuf").dict_to_data(bsonable)
     app.config["publish"](data)
     return ""
 

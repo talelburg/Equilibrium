@@ -19,7 +19,7 @@ def upload_sample(host, port, sample_path):
 
 if __name__ == "__main__":
     try:
-        main(prog_name="equilibrium")
+        main(prog_name="equilibrium-client")
     except Exception as error:
         log(f"Error: {error}")
         sys.exit(1)

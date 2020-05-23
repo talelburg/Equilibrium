@@ -1,5 +1,4 @@
-import datetime
-import pathlib
+import json
 import sys
 
 import click
@@ -18,26 +17,18 @@ main, log = create_basic_cli()
 @click.argument("url", type=str)
 def run_server(host, port, url):
     def publish(data):
-        user_info = data["user_information"]
-        snapshot = data["snapshot"]
-
-        timestamp = datetime.datetime.fromtimestamp(snapshot.datetime / 1000)
-        snapshot_path = pathlib.Path(
-            f"{equilibrium.__path__[0]}/../data/{user_info.user_id}/{timestamp:%Y-%m-%d_%H-%M-%S-%f}")
-        snapshot_path.mkdir(parents=True, exist_ok=True)
-        message = SampleHandler(2).build_message(user_info, snapshot, str(snapshot_path))
-
+        message = json.dumps(SampleHandler("gzip_protobuf").data_to_json(data))
         queue_handler = QueueHandler(url)
-        queue_handler.publish(exchange="", routing_key="snapshots", body=message)
-        log(f"Published message {message} to queue at {url}")
+        log(f"Publishing message {message} to queue at {url} to be parsed")
+        queue_handler.publish(exchange="needs_parsing", body=message)
 
-    log(f"Setting up server at {host}:{port} to publish to {url}")
+    log(f"Setting up server at {host}:{port} to publish to message-queue at {url}")
     equilibrium.server.run_server(host=host, port=port, publish=publish)
 
 
 if __name__ == "__main__":
     try:
-        main(prog_name="equilibrium")
+        main(prog_name="equilibrium-server")
     except Exception as error:
         log(f"Error: {error}")
         sys.exit(1)

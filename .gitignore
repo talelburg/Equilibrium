@@ -3,6 +3,7 @@
 /docs/build/*
 /.pytest_cache/*
 /data/*
+/logs/*
 /.coverage
 /*.mind
 /*.mind.gz

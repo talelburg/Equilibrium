@@ -1,5 +1,9 @@
 version: "3"
 services:
+  rabbitmq:
+    image: "rabbitmq"
+    expose:
+      - "5672"
   server:
     build:
       context: .
@@ -10,11 +14,61 @@ services:
         url: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
-    ports:
-      - "8000:8000"
     volumes:
       - ./data:/data
-  rabbitmq:
-    image: "rabbitmq"
-    expose:
-      - "5672"
+      - ./logs/server:/logs
+    restart: on-failure
+    ports:
+      - "8000:8000"
+  pose_parser:
+    build:
+      context: .
+      dockerfile: ./equilibrium/parsers/Dockerfile
+      args:
+        parser_name: "pose"
+        url: "rabbitmq://rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./data:/data
+      - ./logs/pose:/logs
+    restart: on-failure
+  color_image_parser:
+    build:
+      context: .
+      dockerfile: ./equilibrium/parsers/Dockerfile
+      args:
+        parser_name: "color_image"
+        url: "rabbitmq://rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./data:/data
+      - ./logs/color_image:/logs
+    restart: on-failure
+  depth_image_parser:
+    build:
+      context: .
+      dockerfile: ./equilibrium/parsers/Dockerfile
+      args:
+        parser_name: "depth_image"
+        url: "rabbitmq://rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./data:/data
+      - ./logs/depth_image:/logs
+    restart: on-failure
+  feelings_parser:
+    build:
+      context: .
+      dockerfile: ./equilibrium/parsers/Dockerfile
+      args:
+        parser_name: "feelings"
+        url: "rabbitmq://rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./data:/data
+      - ./logs/feelings:/logs
+    restart: on-failure
