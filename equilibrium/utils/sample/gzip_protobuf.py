@@ -6,7 +6,7 @@ from construct import Int32ul
 from google.protobuf.json_format import MessageToJson, Parse
 
 from equilibrium.equilibrium_pb2 import User, Snapshot
-from equilibrium.utils.shared_data_storage import get_snapshot_data_dir
+from equilibrium.utils.general.shared_data_storage import get_snapshot_data_dir
 
 
 class Adapter:

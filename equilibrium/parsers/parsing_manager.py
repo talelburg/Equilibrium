@@ -3,8 +3,8 @@ import inspect
 import json
 import pathlib
 
-from equilibrium.sample import SampleHandler
-from equilibrium.utils.shared_data_storage import get_snapshot_data_dir
+from equilibrium.utils.sample import SampleHandler
+from equilibrium.utils.general.shared_data_storage import get_snapshot_data_dir
 
 
 class ParsingManager:
@@ -34,6 +34,7 @@ def run_parser(parser_name, raw_data):
     data = SampleHandler("gzip_protobuf").json_to_data(json_dict)
     return json.dumps({
         "user_information": json_dict["user_information"],
+        "snapshot": json_dict["snapshot"],
         "result_path": {
             parser_name: str(ParsingManager().invoke(parser_name, data))
         }

@@ -4,6 +4,10 @@ services:
     image: "rabbitmq"
     expose:
       - "5672"
+  redis:
+    image: "redis"
+    expose:
+      - "6379"
   server:
     build:
       context: .

@@ -1,12 +1,10 @@
 import sys
-import time
 
 import click
 
 import equilibrium
-from equilibrium.queue.queue_handler import QueueHandler
-from equilibrium.sample import SampleHandler
-from equilibrium.utils.cli import create_basic_cli
+from equilibrium.utils.queue import QueueHandler
+from equilibrium.utils.general.cli import create_basic_cli
 
 main, log = create_basic_cli()
 

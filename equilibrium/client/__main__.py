@@ -3,7 +3,7 @@ import sys
 import click
 
 import equilibrium
-from equilibrium.utils.cli import create_basic_cli
+from equilibrium.utils.general.cli import create_basic_cli
 
 main, log = create_basic_cli()
 

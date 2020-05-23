@@ -1,7 +1,7 @@
 import bson
 import requests
 
-from equilibrium.sample import SampleHandler
+from equilibrium.utils.sample import SampleHandler
 
 
 def upload_sample(host: str, port: int, path: str):

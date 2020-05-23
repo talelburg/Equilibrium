@@ -2,7 +2,7 @@ import bson
 import flask
 from flask import request
 
-from equilibrium.sample import SampleHandler
+from equilibrium.utils.sample import SampleHandler
 
 app = flask.Flask(__name__)
 

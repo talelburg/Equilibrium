@@ -2,8 +2,6 @@ FROM python:3.8
 RUN pip install bson flask construct protobuf furl pika
 COPY equilibrium/equilibrium_pb2.py /equilibrium/
 COPY equilibrium/utils/* /equilibrium/utils/
-COPY equilibrium/queue/* /equilibrium/queue/
-COPY equilibrium/sample/* /equilibrium/sample/
 COPY equilibrium/server/* /equilibrium/server/
 ARG host="0.0.0.0"
 ENV HOST $host

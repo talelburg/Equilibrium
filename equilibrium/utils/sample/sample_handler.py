@@ -1,4 +1,4 @@
-from equilibrium.sample import gzip_protobuf
+from equilibrium.utils.sample import gzip_protobuf
 
 
 class SampleHandler:

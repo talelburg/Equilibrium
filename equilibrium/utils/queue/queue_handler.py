@@ -1,7 +1,7 @@
 import furl as furl
 
-from equilibrium.queue.rabbitmq import RabbitMQAdapter
-from equilibrium.utils.wait_for_tcp_port import wait_for_port
+from equilibrium.utils.queue import RabbitMQAdapter
+from equilibrium.utils.general.wait_for_tcp_port import wait_for_port
 
 
 class QueueHandler:
