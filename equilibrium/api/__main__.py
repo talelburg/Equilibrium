@@ -19,7 +19,7 @@ def run_server_cli(host, port, database):
 
 if __name__ == "__main__":
     try:
-        main(prog_name="equilibrium-api")
+        main(prog_name="equilibrium.api")
     except Exception as error:
         log(f"Error: {error}")
         sys.exit(1)

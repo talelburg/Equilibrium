@@ -36,7 +36,7 @@ def run_parser_cli(parser_name, message_queue):
 
 if __name__ == "__main__":
     try:
-        main(prog_name="equilibrium-parsers")
+        main(prog_name="equilibrium.parsers")
     except Exception as error:
         log(f"Error: {error}")
         sys.exit(1)

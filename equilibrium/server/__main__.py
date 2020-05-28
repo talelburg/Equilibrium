@@ -25,7 +25,7 @@ def run_server_cli(host, port, message_queue):
 
 if __name__ == "__main__":
     try:
-        main(prog_name="equilibrium-server")
+        main(prog_name="equilibrium.server")
     except Exception as error:
         log(f"Error: {error}")
         sys.exit(1)

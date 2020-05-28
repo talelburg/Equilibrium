@@ -39,7 +39,7 @@ def get_result(user_id, timestamp, result_name):
     timestamp = int(timestamp)
     result = app.config["db"].get_result(user_id, timestamp, result_name)
     if "data" in result and pathlib.Path(result["data"]).exists():
-        result["data"] = f"/users/{user_id}/snapshots/{timestamp}/{result_name}/data"
+        result["data"] = f"users/{user_id}/snapshots/{timestamp}/{result_name}/data"
     return jsonify(result)
 
 

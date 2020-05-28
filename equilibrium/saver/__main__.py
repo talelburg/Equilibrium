@@ -37,7 +37,7 @@ def run_saver(database, message_queue):
 
 if __name__ == "__main__":
     try:
-        main(prog_name="equilibrium-saver")
+        main(prog_name="equilibrium.saver")
     except Exception as error:
         log(f"Error: {error}")
         sys.exit(1)
