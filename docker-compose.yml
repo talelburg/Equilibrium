@@ -1,13 +1,5 @@
 version: "3"
 services:
-  rabbitmq:
-    image: "rabbitmq"
-    expose:
-      - "5672"
-  mongodb:
-    image: "mongo"
-    expose:
-      - "27017"
   server:
     build:
       context: .
@@ -18,25 +10,16 @@ services:
         message_queue: "rabbitmq://rabbitmq:5672"
     depends_on:
       - rabbitmq
+    ports:
+      - "8000:8000"
     volumes:
       - ./data:/data
       - ./logs/server:/logs
     restart: on-failure
-    ports:
-      - "8000:8000"
-  saver:
-    build:
-      context: .
-      dockerfile: ./equilibrium/saver/Dockerfile
-      args:
-        database: "mongodb://mongodb:27017"
-        message_queue: "rabbitmq://rabbitmq:5672"
-    depends_on:
-      - rabbitmq
-      - mongodb
-    volumes:
-      - ./logs/saver:/logs
-    restart: on-failure
+  rabbitmq:
+    image: "rabbitmq"
+    expose:
+      - "5672"
   pose_parser:
     build:
       context: .
@@ -89,4 +72,41 @@ services:
     volumes:
       - ./data:/data
       - ./logs/feelings:/logs
+    restart: on-failure
+  saver:
+    build:
+      context: .
+      dockerfile: ./equilibrium/saver/Dockerfile
+      args:
+        database: "mongodb://mongodb:27017"
+        message_queue: "rabbitmq://rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+      - mongodb
+    volumes:
+      - ./logs/saver:/logs
+    restart: on-failure
+  mongodb:
+    image: "mongo"
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+  api:
+    build:
+      context: .
+      dockerfile: ./equilibrium/api/Dockerfile
+      args:
+        host: "0.0.0.0"
+        port: 5000
+        database: "mongodb://mongodb:27017"
+    depends_on:
+      - mongodb
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logs/api:/logs
+      - ./data:/data
     restart: on-failure

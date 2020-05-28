@@ -40,7 +40,7 @@ class MongoDBAdapter:
         }
 
     def get_snapshots(self, user_id):
-        return [document["timestamp"] for document in self.db.users.find({"user_id": user_id})]
+        return [document["timestamp"] for document in self.db.snapshots.find({"user_id": user_id})]
 
     def get_snapshot(self, user_id, timestamp):
         document = self.db.snapshots.find_one({"user_id": user_id, "timestamp": timestamp})
@@ -48,7 +48,7 @@ class MongoDBAdapter:
             return {}
         return {
             "timestamp": document["timestamp"],
-            "results": [k for k in document if k not in {"user_id", "timestamp"}]
+            "results": [k for k in document if k not in {"_id", "user_id", "timestamp"}]
         }
 
     def get_result(self, user_id, timestamp, result_name):
