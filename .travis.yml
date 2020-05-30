@@ -2,7 +2,7 @@ language: python
 python:
   - "3.8"
 install:
-  - sudo pip install --user -r requirements.txt
+  - sudo pip3.8 install --user -r requirements.txt
 script:
   - pytest --cov-report term --cov=equilibrium
 after_success:
