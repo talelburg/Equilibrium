@@ -44,7 +44,7 @@ See [full documentation](https://equilibrium.readthedocs.io/en/latest/).
 
 ## Usage
 
-The `equilibrium` packages provides the following functionality:
+We provide the following functionality:
 
 - ### The Client
     The client serves as the entrypoint for data into our system. It allows us to stream a mind sample
