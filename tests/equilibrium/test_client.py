@@ -5,7 +5,6 @@ from click.testing import CliRunner
 
 from equilibrium.client import upload_sample
 from equilibrium.client.__main__ import main
-from equilibrium.utils.sample import SampleHandler
 
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 8000
