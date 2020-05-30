@@ -31,6 +31,8 @@ DEPTH_IMAGE = {
 @pytest.fixture
 def data_dir(resources):
     p = (pathlib.Path(__file__).absolute() / "../../data/42/2019-12-04_10-08-07-339000").resolve()
+    if not p.parent.exists():
+        p.parent.mkdir(parents=True)
     if not p.exists():
         p.symlink_to(resources, target_is_directory=True)
     yield
