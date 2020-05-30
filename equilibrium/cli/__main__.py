@@ -60,8 +60,7 @@ def get_result(host, port, user_id, timestamp, result_name, save):
     if save:
         if "data" in result:
             r = requests.get(f"http://{host}:{port}{result['data']}")
-            # eval to get rid of something like "b'...'"
-            result = eval(r.json()["data"])
+            result = r.json()["data"]
             data = base64.b64decode(result)
             with open(save, "wb") as f:
                 f.write(data)

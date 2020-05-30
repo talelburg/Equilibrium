@@ -17,9 +17,10 @@ services:
       - ./logs/server:/logs
     restart: on-failure
   rabbitmq:
-    image: "rabbitmq"
-    expose:
-      - "5672"
+    image: "rabbitmq:management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   pose_parser:
     build:
       context: .
@@ -87,11 +88,11 @@ services:
       - ./logs/saver:/logs
     restart: on-failure
   mongodb:
-    image: "mongo"
-    expose:
-      - "27017"
+    image: "mongo:latest"
     ports:
       - "27017:27017"
+    volumes:
+      - ./db_data:/data/db
   api:
     build:
       context: .
@@ -102,11 +103,25 @@ services:
         database: "mongodb://mongodb:27017"
     depends_on:
       - mongodb
-    expose:
-      - "5000"
     ports:
       - "5000:5000"
     volumes:
       - ./logs/api:/logs
       - ./data:/data
+    restart: on-failure
+  gui:
+    build:
+      context: .
+      dockerfile: ./equilibrium/gui/Dockerfile
+      args:
+        host: "0.0.0.0"
+        port: 8080
+        api_host: "127.0.0.1"
+        api_port: 5000
+    depends_on:
+      - api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs/gui:/logs
     restart: on-failure

@@ -3,11 +3,12 @@ import pathlib
 
 import flask
 from flask import jsonify
+from flask_cors import CORS
 
 from equilibrium.utils.database import DatabaseHandler
 
 app = flask.Flask(__name__)
-
+CORS(app)
 
 @app.route("/users", methods=["GET"])
 def get_users():
@@ -49,7 +50,7 @@ def get_result_data(user_id, timestamp, result_name):
     timestamp = int(timestamp)
     result = app.config["db"].get_result(user_id, timestamp, result_name)
     if "data" in result and (data_path := pathlib.Path(result["data"])).exists():
-        result["data"] = str(base64.b64encode(data_path.read_bytes()))
+        result["data"] = base64.b64encode(data_path.read_bytes()).decode()
     return jsonify(result)
 
 

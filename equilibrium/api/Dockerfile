@@ -1,5 +1,5 @@
 FROM python:3.8
-RUN pip install flask furl pymongo
+RUN pip install flask flask-cors furl pymongo
 COPY ./equilibrium/equilibrium_pb2.py /equilibrium/
 COPY ./equilibrium/api/ /equilibrium/api/
 COPY ./equilibrium/utils/ /equilibrium/utils/

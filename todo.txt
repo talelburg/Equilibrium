@@ -7,7 +7,7 @@
     * Database - DONE
     * API - DONE
     * CLI - DONE
-    * GUI
+    * GUI - GUI
 * Write tests
 * Document
 * Deployment scripts
