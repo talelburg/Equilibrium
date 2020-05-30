@@ -3,11 +3,8 @@ import json
 import pytest
 
 from equilibrium.server.server import get_app
+from equilibrium.server.__main__ import main
 from equilibrium.utils.sample import SampleHandler
-
-EXPECTED = {'sample_format': '.gz',
-            'user_information': '{\n  "userId": "42",\n  "username": "Dan Gittik",\n  "birthday": 699746400\n}',
-            'snapshot': '{\n  "datetime": "1575446887339",\n  "pose": {\n    "translation": {\n      "x": 0.4873843491077423,\n      "y": 0.007090016733855009,\n      "z": -1.1306129693984985\n    },\n    "rotation": {\n      "x": -0.10888676356214629,\n      "y": -0.26755994585035286,\n      "z": -0.021271118915446748,\n      "w": 0.9571326384559261\n    }\n  },\n  "colorImage": {\n    "width": 1920,\n    "height": 1080\n  },\n  "depthImage": {\n    "width": 224,\n    "height": 172\n  },\n  "feelings": {}\n}'}
 
 
 @pytest.fixture
