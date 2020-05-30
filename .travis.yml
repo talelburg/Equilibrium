@@ -7,7 +7,7 @@ before_install:
   - pip install -U pytest
   - pip install codecov
 install:
-  - sudo pip3.8 install --user -r requirements.txt
+  - pip install -r requirements.txt
 script:
   - pytest --cov-report term --cov=equilibrium
 after_success:
