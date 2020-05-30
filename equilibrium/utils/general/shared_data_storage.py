@@ -11,4 +11,4 @@ def get_snapshot_data_dir(data):
     snapshot = data["snapshot"]
 
     timestamp = datetime.datetime.fromtimestamp(snapshot.datetime / 1000)
-    return pathlib.Path(DATA_DIR_PATH) / str(user_info.user_id) / f"{timestamp:%Y-%m-%d_%H-%M-%S-%f}"
+    return (pathlib.Path(DATA_DIR_PATH) / str(user_info.user_id) / f"{timestamp:%Y-%m-%d_%H-%M-%S-%f}").resolve()

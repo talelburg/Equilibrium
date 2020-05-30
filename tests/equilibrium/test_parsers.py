@@ -1,5 +1,6 @@
 import json
 import pathlib
+import datetime
 
 import pytest
 from click.testing import CliRunner
@@ -7,6 +8,8 @@ from click.testing import CliRunner
 from equilibrium.parsers import run_parser
 from equilibrium.parsers.__main__ import main
 
+DATETIME = f"{datetime.datetime.fromtimestamp(1575446887.339):%Y-%m-%d_%H-%M-%S-%f}"
+DATAPATH = (pathlib.Path(__file__).absolute().parent.parent.parent / f"data/42/{DATETIME}").resolve()
 POSE = {
     'translation': {
         'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985
@@ -17,12 +20,12 @@ POSE = {
 }
 FEELINGS = {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0, 'happiness': 0.0}
 COLOR_IMAGE = {
-    'data': '/home/user/Desktop/asd/equilibrium/equilibrium/../data/42/2019-12-04_10-08-07-339000/color_image.jpg',
+    'data': str(pathlib.Path(__file__).absolute().parent / "resources/color_image.jpg"),
     'height': 1080,
     'width': 1920
 }
 DEPTH_IMAGE = {
-    'data': '/home/user/Desktop/asd/equilibrium/equilibrium/../data/42/2019-12-04_10-08-07-339000/depth_image.jpg',
+    'data': str(pathlib.Path(__file__).absolute().parent / "resources/depth_image.jpg"),
     'height': 172,
     'width': 224
 }
@@ -30,14 +33,13 @@ DEPTH_IMAGE = {
 
 @pytest.fixture
 def data_dir(resources):
-    p = (pathlib.Path(__file__).absolute() / "../../data/42/2019-12-04_10-08-07-339000").resolve()
-    if not p.parent.exists():
-        p.parent.mkdir(parents=True)
-    if not p.exists():
-        p.symlink_to(resources, target_is_directory=True)
+    if not DATAPATH.parent.exists():
+        DATAPATH.parent.mkdir(parents=True)
+    if not DATAPATH.exists():
+        DATAPATH.symlink_to(resources, target_is_directory=True)
     yield
-    if p.is_symlink():
-        p.unlink()
+    if DATAPATH.is_symlink():
+        DATAPATH.unlink()
 
 
 @pytest.mark.parametrize("parser_name, expected_output", [
